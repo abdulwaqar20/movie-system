@@ -3,6 +3,9 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
+# Base URL for TMDB images
+TMDB_IMAGE_URL = "https://image.tmdb.org/t/p/w500"
+
 def load_data():
     """Load the cleaned TMDB movies dataset."""
     return pd.read_csv('data/tmdb_movies.csv')
@@ -46,7 +49,13 @@ def main():
         recommendations = get_recommendations(movie_title, movies, cosine_sim)
         if recommendations is not None:
             st.write(f"Recommendations for '{movie_title}':")
-            st.dataframe(recommendations[['title', 'release_date', 'vote_average']])
+            for _, row in recommendations.iterrows():
+                st.write(f"**{row['title']}** (Release Date: {row['release_date']}, Rating: {row['vote_average']})")
+                # Display the movie poster
+                if pd.notnull(row['poster_path']):
+                    poster_url = TMDB_IMAGE_URL + row['poster_path']
+                    st.image(poster_url, width=200)  # Adjust width as needed
+                st.markdown("---")  # Add a separator between movies
         else:
             st.write("Movie not found. Please try another title.")
 
