@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from fuzzywuzzy import process
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
@@ -22,16 +23,19 @@ def calculate_similarity(tfidf_matrix):
 
 def get_recommendations(title, movies, cosine_sim):
     """Get movie recommendations based on the provided title."""
-    try:
-        idx = movies.index[movies['title'] == title].tolist()[0]
+    # Perform fuzzy matching for the title
+    movie_titles = movies['title'].tolist()
+    match = process.extractOne(title, movie_titles)
+    
+    if match and match[1] > 70:  # You can adjust the threshold (70) based on accuracy
+        idx = movies.index[movies['title'] == match[0]].tolist()[0]
         sim_scores = list(enumerate(cosine_sim[idx]))
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
         sim_scores = sim_scores[1:11]  # Get top 10 recommendations
         movie_indices = [i[0] for i in sim_scores]
         return movies.iloc[movie_indices]
-    except IndexError:
-        return None  # Return None if the movie title is not found
-
+    else:
+        return None  # Return None if no good match is found
 # Main Streamlit app
 def main():
     st.title("Movie Recommendation System")
