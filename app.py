@@ -4,9 +4,33 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from fuzzywuzzy import process  # For fuzzy matching
 import plotly.express as px  # For enhanced visualization
+import ast
 
 # Base URL for TMDB images
 TMDB_IMAGE_URL = "https://image.tmdb.org/t/p/w500"
+
+# Genre ID to Name Mapping (you can extend this based on your dataset)
+GENRE_ID_MAP = {
+    28: "Action",
+    12: "Adventure",
+    16: "Animation",
+    35: "Comedy",
+    80: "Crime",
+    99: "Documentary",
+    18: "Drama",
+    10751: "Family",
+    14: "Fantasy",
+    36: "History",
+    27: "Horror",
+    10402: "Music",
+    9648: "Mystery",
+    10749: "Romance",
+    878: "Science Fiction",
+    10770: "TV Movie",
+    53: "Thriller",
+    10752: "War",
+    37: "Western"
+}
 
 def load_data():
     """Load the cleaned TMDB movies dataset."""
@@ -27,6 +51,21 @@ def fuzzy_match_title(title, movies):
     movie_titles = movies['title'].tolist()
     matched_title, score = process.extractOne(title, movie_titles)
     return matched_title
+
+def get_genre_names(genre_ids):
+    """Convert genre IDs to genre names using the GENRE_ID_MAP."""
+    if pd.notnull(genre_ids):
+        # Safely parse the genre_ids string to a list if needed
+        if isinstance(genre_ids, str):
+            try:
+                genre_ids = ast.literal_eval(genre_ids)  # Safely convert string to list
+            except (ValueError, SyntaxError):
+                genre_ids = []  # In case there's a parsing error, fallback to empty list
+
+        # Now genre_ids should be a list
+        genre_names = [GENRE_ID_MAP.get(id, "Unknown") for id in genre_ids]
+        return ", ".join(genre_names)
+    return "Not available"
 
 def get_recommendations(title, movies, cosine_sim):
     """Get movie recommendations based on the provided title."""
@@ -60,7 +99,7 @@ def main():
     Enter a movie title in the sidebar to get personalized movie recommendations based on similar movie overviews.
     The system will also try to find similar movies even if you enter partial or misspelled titles.
     """)
-
+    
     # Sidebar for input
     st.sidebar.header("Movie Recommendation Search")
     
@@ -97,7 +136,7 @@ def main():
                     st.image(poster_url, width=200)  # Adjust width as needed
 
                 st.markdown(f"**Overview:** {row['overview']}")
-                st.markdown(f"**Genres:** {', '.join(row['genres'].split('|'))}")
+                st.markdown(f"**Genres:** {get_genre_names(row['genre_ids'])}")
                 st.markdown("---")  # Separator between movies
         else:
             st.error(f"Movie titled '{movie_title}' not found. Please try another title or check for typos!")
