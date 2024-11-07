@@ -8,7 +8,10 @@ import plotly.express as px  # For enhanced visualization
 # Base URL for TMDB images
 TMDB_IMAGE_URL = "https://image.tmdb.org/t/p/w500"
 
+<<<<<<< HEAD
 # Load the movie dataset
+=======
+>>>>>>> 369657919a5caf7bfec513f53ddf402444fe0194
 def load_data():
     """Load the cleaned TMDB movies dataset."""
     return pd.read_csv('data/tmdb_movies.csv')
@@ -80,6 +83,7 @@ def main():
 
         # Display recommendations or error message
         if recommendations is not None:
+<<<<<<< HEAD
             st.subheader(f"Recommendations for **{movie_title}**:")
             
             # Display a Plotly bar chart of movie ratings
@@ -100,6 +104,16 @@ def main():
                 st.markdown(f"**Overview:** {row['overview']}")
                 st.markdown(f"**Genres:** {', '.join(row['genres'].split('|'))}")
                 st.markdown("---")  # Separator between movies
+=======
+            st.write(f"Recommendations for '{movie_title}':")
+            for _, row in recommendations.iterrows():
+                st.write(f"**{row['title']}** (Release Date: {row['release_date']}, Rating: {row['vote_average']})")
+                # Display the movie poster
+                if pd.notnull(row['poster_path']):
+                    poster_url = TMDB_IMAGE_URL + row['poster_path']
+                    st.image(poster_url, width=200)  # Adjust width as needed
+                st.markdown("---")  # Add a separator between movies
+>>>>>>> 369657919a5caf7bfec513f53ddf402444fe0194
         else:
             st.error(f"Movie titled '{movie_title}' not found. Please try another title or check for typos!")
 
