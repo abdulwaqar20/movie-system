@@ -19,7 +19,7 @@ def fetch_movies(page=1):
 def save_movies_to_csv():
     """Fetch movies and save them to a CSV file."""
     all_movies = []
-    for page in range(1, 500):  # Fetch data from the first 5 pages
+    for page in range(1, 11):  # Fetch data from the first 5 pages
         movies = fetch_movies(page)
         all_movies.extend(movies)
     
