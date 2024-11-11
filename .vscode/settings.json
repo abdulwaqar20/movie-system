@@ -1,5 +1,13 @@
 {
     "cSpell.words": [
-        "TMDB"
+        "fillna",
+        "fuzzywuzzy",
+        "iloc",
+        "iterrows",
+        "selectbox",
+        "streamlit",
+        "tfidf",
+        "TMDB",
+        "Vectorizer"
     ]
 }
