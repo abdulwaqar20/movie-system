@@ -81,7 +81,7 @@ def main():
     st.set_page_config(page_title="Enhanced Movie Recommender", layout="wide")
     
     # App title
-    st.title("🎬 Enhanced Movie Recommendation System")
+    st.title("🎬 Movie Recommendation System")
     st.markdown("Get movie recommendations with filters and visualizations!")
 
     # Sidebar input
